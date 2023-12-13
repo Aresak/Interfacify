@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Aresak.Interfacify.Generator\Aresak.Interfacify.Generator.csproj"
+                      OutputItemType="Analyzer"/>
+  </ItemGroup>
+
 </Project>
