@@ -7,6 +7,15 @@
     <Nullable>enable</Nullable>
     <AssemblyName>Aresak.Interfacify</AssemblyName>
     <RootNamespace>Aresak.Interfacify</RootNamespace>
+    <Title>Interfacify</Title>
+    <Authors>Aresak</Authors>
+    <Description>Automates the generation of interface-compliant properties based on attributes</Description>
+    <PackageProjectUrl>https://github.com/Aresak/Interfacify</PackageProjectUrl>
+    <Copyright>https://github.com/Aresak/Interfacify/blob/main/LICENSE</Copyright>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Aresak/Interfacify</RepositoryUrl>
+    <PackageTags>code;interface;generator;attribute;template</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -18,6 +27,13 @@
     <WarningLevel>9999</WarningLevel>
     <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CSharpGuidelinesAnalyzer" Version="3.8.4">
