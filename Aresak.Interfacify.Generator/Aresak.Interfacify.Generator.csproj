@@ -11,11 +11,11 @@
     <Authors>Aresak</Authors>
     <Description>Automates the generation of interface-compliant properties based on attributes</Description>
     <PackageProjectUrl>https://github.com/Aresak/Interfacify</PackageProjectUrl>
-    <Copyright>https://github.com/Aresak/Interfacify/blob/main/LICENSE</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Aresak/Interfacify</RepositoryUrl>
     <PackageTags>code;interface;generator;attribute;template</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
