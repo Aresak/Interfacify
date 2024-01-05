@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Aresak.Interfacify.Attributes;
+namespace Aresak.Interfacify;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class InterfacifyAttribute : Attribute

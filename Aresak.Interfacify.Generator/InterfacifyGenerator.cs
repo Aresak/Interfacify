@@ -1,5 +1,4 @@
-﻿using Aresak.Interfacify.Attributes;
-using Aresak.Interfacify.Data;
+﻿using Aresak.Interfacify.Data;
 using Aresak.Interfacify.Templates;
 using Aresak.Interfacify.Templates.Observable;
 using Microsoft.CodeAnalysis;
@@ -17,7 +16,7 @@ namespace Aresak.Interfacify;
 [Generator]
 public class InterfacifyGenerator : IIncrementalGenerator
 {
-    const string ATTRIBUTE_PATH = "Aresak.Interfacify.Attributes.InterfacifyAttribute";
+    const string ATTRIBUTE_PATH = "Aresak.Interfacify.InterfacifyAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
