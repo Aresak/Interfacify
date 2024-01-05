@@ -1,9 +1,11 @@
 ﻿using Aresak.Interfacify.Generator.Attributes;
-using Aresak.Interfacify.Generator.Extensions;
+using Aresak.Interfacify.Generator.Data;
 using Aresak.Interfacify.Generator.Templates;
+using Aresak.Interfacify.Generator.Templates.Observable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
+using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -21,8 +23,6 @@ public class InterfacifyGenerator : IIncrementalGenerator
     {
         IncrementalValuesProvider<ClassDeclarationSyntax> provider = CreateProvider(context);
         IncrementalValueProvider<(Compilation Left, ImmutableArray<ClassDeclarationSyntax> Right)> compilation = CreateCompilation(context, provider);
-
-        Debugger.Launch();
 
         context.RegisterSourceOutput(compilation, (sourceContext, source) => Execute(sourceContext, source.Left, source.Right));
     }
@@ -55,11 +55,28 @@ public class InterfacifyGenerator : IIncrementalGenerator
         return compilation;
     }
 
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Miscellaneous Design", "AV1210:Catch a specific exception instead of Exception, SystemException or ApplicationException", Justification = "<Pending>")]
     static void Execute(SourceProductionContext context, Compilation compilation, ImmutableArray<ClassDeclarationSyntax> nodes)
     {
         foreach (ClassDeclarationSyntax node in nodes)
         {
-            ProcessNode(context, compilation, node);
+            try
+            {
+                ProcessNode(context, compilation, node);
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+
+                if (Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                }
+                else
+                {
+                    Debugger.Launch();
+                }
+            }
         }
     }
 
@@ -81,25 +98,70 @@ public class InterfacifyGenerator : IIncrementalGenerator
             return;
         }
 
-        PropertyTemplate template = GetTemplate(symbol);
-        GeneratedFileBuilder fileBuilder = new(symbol, template);
-
-        string source = fileBuilder.Generate();
+        FileTemplate template = GetTemplate(symbol);
+        string source = template.GenerateFile();
 
         SaveSource(context, symbol, source);
     }
 
-    static PropertyTemplate GetTemplate(INamedTypeSymbol symbol)
+    static FileTemplate GetTemplate(INamedTypeSymbol symbol)
     {
-        AttributeData attribute = symbol.GetAttributes().First(attribute => attribute.AttributeClass?.Name == nameof(InterfacifyAttribute));
-        // TODO: Use the reflection to get an actual template from the attribute
-        return new();
+        Template templateChoice = Template.Basic;
+
+        AttributeData? attribute = symbol.GetAttributes().FirstOrDefault(attribute => attribute.AttributeClass?.Name == nameof(InterfacifyAttribute));
+
+        if (attribute is not null)
+        {
+            templateChoice = GetTemplateFromAttribute(attribute);
+        }
+
+        ClassMetadata metadata = new(symbol);
+        FileTemplate template = GetTemplateFromChoice(templateChoice, metadata);
+
+        return template;
     }
 
     static void SaveSource(SourceProductionContext context, INamedTypeSymbol symbol, string sourceText)
     {
         string originalName = symbol.ToDisplayString();
         SourceText source = SourceText.From(sourceText, Encoding.UTF8);
-        context.AddSource($"{originalName}.g.cs", source);
+        context.AddSource($"{originalName}.Interfacify.g.cs", source);
+    }
+
+    static AttributeData GetInterfacifyAttribute(INamedTypeSymbol symbol)
+    {
+        AttributeData attribute = symbol.GetAttributes().First(attribute => attribute.AttributeClass?.Name == nameof(InterfacifyAttribute));
+        return attribute;
+    }
+
+    static Template GetTemplateFromAttribute(AttributeData attribute)
+    {
+        Template template = Template.Basic;
+
+        TypedConstant? templateArgument = attribute.ConstructorArguments.FirstOrDefault();
+
+        if (templateArgument is not null)
+        {
+            string? value = templateArgument.Value.Value?.ToString();
+
+            if (value is not null)
+            {
+                template = (Template)Enum.Parse(typeof(Template), value);
+            }
+        }
+
+        return template;
+    }
+
+    static FileTemplate GetTemplateFromChoice(Template templateChoice, ClassMetadata metadata)
+    {
+        FileTemplate template = templateChoice switch
+        {
+            Template.Basic => new FileTemplate(metadata),
+            Template.NotifyPropertyChanged => new ObservableFileTemplate(metadata),
+            _ => throw new NotImplementedException($"Template choice '{templateChoice}' is not available"),
+        };
+
+        return template;
     }
 }

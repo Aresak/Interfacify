@@ -2,7 +2,8 @@
 
 namespace Aresak.Interfacify.Samples;
 
-[Interfacify]
+[Interfacify(Generator.Template.NotifyPropertyChanged)]
 internal partial class TestClass : ITestInterface
 {
+    public Guid Id { get; }
 }

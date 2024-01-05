@@ -1,56 +1,69 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Aresak.Interfacify.Generator.Data;
 
 namespace Aresak.Interfacify.Generator.Templates;
 
-public class PropertyTemplate
+internal class PropertyTemplate(PropertyMetadata property)
 {
-    public string Generate(IPropertySymbol property)
+    protected PropertyMetadata Property => property;
+
+    public virtual string Generate()
     {
-        if (property.SetMethod != null && property.GetMethod != null)
+        if (Property.HasSetter && Property.HasGetter)
         {
-            return GenerateWithGetterSetter(property);
+            return GenerateWithGetterSetter();
         }
-        else if (property.GetMethod != null)
+        else if (Property.HasGetter)
         {
-            return GenerateWithGetterOnly(property);
+            return GenerateWithGetterOnly();
         }
-        else if (property.SetMethod != null)
+        else if (Property.HasSetter)
         {
-            return GenerateWithSetterOnly(property);
+            return GenerateWithSetterOnly();
         }
         else
         {
-            return $"{property.DeclaredAccessibility.ToString().ToLowerInvariant()} {property.Type.Name} {property.Name};";
+            return GenerateEmpty();
         }
     }
 
-    protected string GenerateWithGetterOnly(IPropertySymbol property)
+    protected virtual string GenerateWithGetterOnly()
     {
+        string declaration = GeneratePropertyDeclaration();
+
         return $@"
-            {property.DeclaredAccessibility.ToString().ToLowerInvariant()} {property.Type.Name} {property.Name} {{
+            {declaration} {{
                 get;
             }}
             ";
     }
 
-    protected string GenerateWithSetterOnly(IPropertySymbol property)
+    protected virtual string GenerateWithSetterOnly()
     {
         // The Only set will give CS8051 error. It needs to have get accessors, or set the value to something
+        return GenerateWithGetterSetter();
+    }
+
+    protected virtual string GenerateWithGetterSetter()
+    {
+        string declaration = GeneratePropertyDeclaration();
+
         return $@"
-            {property.DeclaredAccessibility.ToString().ToLowerInvariant()} {property.Type.Name} {property.Name} {{
+            {declaration} {{
                 get;
                 set;
             }}
             ";
     }
 
-    protected string GenerateWithGetterSetter(IPropertySymbol property)
+    protected virtual string GenerateEmpty()
     {
-        return $@"
-            {property.DeclaredAccessibility.ToString().ToLowerInvariant()} {property.Type.Name} {property.Name} {{
-                get;
-                set;
-            }}
-            ";
+        string declaration = GeneratePropertyDeclaration();
+
+        return $"{declaration};";
+    }
+
+    protected virtual string GeneratePropertyDeclaration()
+    {
+        return $"{Property.AccessibilityToString()} {Property.Type.Name} {Property.Name}";
     }
 }
