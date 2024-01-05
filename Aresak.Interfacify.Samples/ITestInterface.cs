@@ -1,5 +1,8 @@
 ﻿namespace Aresak.Interfacify.Samples;
 
+/// <summary>
+/// Sample interface for the <see cref="InterfacifyAttribute"/>.
+/// </summary>
 internal interface ITestInterface
 {
     Guid Id { get; }

@@ -9,11 +9,6 @@ internal class ObservablePropertyTemplate(PropertyMetadata property) : PropertyT
     string privateValueDeclaration => $"{Property.AccessibilityToString()} {Property.Type.Name} {privateValueName}";
     string publicValueDeclaration => $"{Property.AccessibilityToString()} {Property.Type.Name} {Property.Name}";
 
-    protected override string GenerateEmpty()
-    {
-        return GenerateWithGetterSetter();
-    }
-
     protected override string GenerateWithGetterOnly()
     {
         return $@"
@@ -40,6 +35,13 @@ internal class ObservablePropertyTemplate(PropertyMetadata property) : PropertyT
             }}
         }}
         ";
+    }
+
+    protected override string GenerateEmpty()
+    {
+        // Even empty properties need to have getter and setter
+        // for PropertyChanged to work.
+        return GenerateWithGetterSetter();
     }
 
     protected override string GeneratePropertyDeclaration()

@@ -1,14 +1,21 @@
-﻿#nullable disable
+﻿// Example how the generated code will look like.
+
+#nullable disable
 
 using System.CodeDom.Compiler;
+
+// <AddUsingStatements>
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+// </ AddUsingStatements>
 
 namespace Aresak.Interfacify.Templates.Observable;
 
 [GeneratedCode("Interfacify", "Example")]
+// <AddClassAttributes />
 internal class ObservableClassExample : INotifyPropertyChanged
 {
+    // <AddAdditionalClassCode>
     public event PropertyChangedEventHandler PropertyChanged;
 
     private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -21,18 +28,21 @@ internal class ObservableClassExample : INotifyPropertyChanged
         PropertyChangedEventArgs arguments = new PropertyChangedEventArgs(propertyName);
         PropertyChanged.Invoke(this, arguments);
     }
+    // </AddAdditionalClassCode>
 
-    private string name;
+    // <GenerateProperties>
+    private string _generated_Name;
     public string Name
     {
-        get => name;
+        get => _generated_Name;
         set
         {
-            if (value != name)
+            if (value != _generated_Name)
             {
-                name = value;
+                _generated_Name = value;
                 NotifyPropertyChanged();
             }
         }
     }
+    // </GenerateProperties>
 }

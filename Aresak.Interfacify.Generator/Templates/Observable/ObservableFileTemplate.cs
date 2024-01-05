@@ -33,11 +33,6 @@ internal class ObservableFileTemplate(ClassMetadata metadata) : FileTemplate(met
             PropertyChangedEventArgs arguments = new PropertyChangedEventArgs(propertyName);
             PropertyChanged.Invoke(this, arguments);
         }}
-";
-    }
-
-    protected override string AddClassAttributes()
-    {
-        return base.AddClassAttributes();
+        ";
     }
 }
