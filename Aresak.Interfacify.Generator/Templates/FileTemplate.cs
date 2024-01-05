@@ -1,9 +1,9 @@
-﻿using Aresak.Interfacify.Generator.Data;
+﻿using Aresak.Interfacify.Data;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Text;
 
-namespace Aresak.Interfacify.Generator.Templates;
+namespace Aresak.Interfacify.Templates;
 
 internal class FileTemplate(ClassMetadata metadata)
 {

@@ -1,7 +1,7 @@
-﻿using Aresak.Interfacify.Generator.Attributes;
-using Aresak.Interfacify.Generator.Data;
-using Aresak.Interfacify.Generator.Templates;
-using Aresak.Interfacify.Generator.Templates.Observable;
+﻿using Aresak.Interfacify.Attributes;
+using Aresak.Interfacify.Data;
+using Aresak.Interfacify.Templates;
+using Aresak.Interfacify.Templates.Observable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
@@ -12,12 +12,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Aresak.Interfacify.Generator;
+namespace Aresak.Interfacify;
 
 [Generator]
 public class InterfacifyGenerator : IIncrementalGenerator
 {
-    const string ATTRIBUTE_PATH = "Aresak.Interfacify.Generator.Attributes.InterfacifyAttribute";
+    const string ATTRIBUTE_PATH = "Aresak.Interfacify.Attributes.InterfacifyAttribute";
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {

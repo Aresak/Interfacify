@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using System;
 
-namespace Aresak.Interfacify.Generator.Data;
+namespace Aresak.Interfacify.Data;
 
 internal record Metadata
 {

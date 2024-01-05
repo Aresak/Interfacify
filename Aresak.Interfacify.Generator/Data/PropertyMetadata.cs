@@ -1,6 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 
-namespace Aresak.Interfacify.Generator.Data;
+namespace Aresak.Interfacify.Data;
 
 internal record PropertyMetadata : Metadata
 {

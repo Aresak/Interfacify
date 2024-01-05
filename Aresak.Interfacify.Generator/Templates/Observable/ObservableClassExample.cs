@@ -4,7 +4,7 @@ using System.CodeDom.Compiler;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Aresak.Interfacify.Generator.Templates.Observable;
+namespace Aresak.Interfacify.Templates.Observable;
 
 [GeneratedCode("Interfacify", "Example")]
 internal class ObservableClassExample : INotifyPropertyChanged

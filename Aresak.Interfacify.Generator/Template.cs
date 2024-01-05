@@ -1,4 +1,4 @@
-﻿namespace Aresak.Interfacify.Generator;
+﻿namespace Aresak.Interfacify;
 
 public enum Template
 {

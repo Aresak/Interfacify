@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-namespace Aresak.Interfacify.Generator.Data;
+namespace Aresak.Interfacify.Data;
 
 internal record ClassMetadata : Metadata
 {

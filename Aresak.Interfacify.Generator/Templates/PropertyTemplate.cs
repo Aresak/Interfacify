@@ -1,6 +1,6 @@
-﻿using Aresak.Interfacify.Generator.Data;
+﻿using Aresak.Interfacify.Data;
 
-namespace Aresak.Interfacify.Generator.Templates;
+namespace Aresak.Interfacify.Templates;
 
 internal class PropertyTemplate(PropertyMetadata property)
 {

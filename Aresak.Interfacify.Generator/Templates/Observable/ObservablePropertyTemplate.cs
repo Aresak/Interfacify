@@ -1,6 +1,6 @@
-﻿using Aresak.Interfacify.Generator.Data;
+﻿using Aresak.Interfacify.Data;
 
-namespace Aresak.Interfacify.Generator.Templates.Observable;
+namespace Aresak.Interfacify.Templates.Observable;
 
 internal class ObservablePropertyTemplate(PropertyMetadata property) : PropertyTemplate(property)
 {

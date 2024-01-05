@@ -5,6 +5,8 @@
     <LangVersion>latest</LangVersion>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <Nullable>enable</Nullable>
+    <AssemblyName>Aresak.Interfacify</AssemblyName>
+    <RootNamespace>Aresak.Interfacify</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
