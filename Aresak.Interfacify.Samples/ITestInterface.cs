@@ -21,4 +21,19 @@ internal interface ITestInterface
     int SetterOnly { set; }
 
     int DiffGetter { get; protected set; }
+
+    TestEnum Enum { get; set; }
+
+    Guid SomeGuid { get; set; }
+
+    DateTime SomeDateTime { get; set; }
+}
+
+internal enum TestEnum
+{
+    One,
+
+    Two,
+
+    Three
 }
