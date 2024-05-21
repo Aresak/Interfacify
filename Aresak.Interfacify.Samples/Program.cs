@@ -13,7 +13,8 @@ internal class Program
         // Generated properties for an existing class:
         TestClass testClass = new()
         {
-            Email = "some-value"
+            Email = "some-value",
+            NullableLong = null
         };
 
         // Generated a whole class from an interface:

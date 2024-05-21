@@ -29,4 +29,6 @@ internal interface ITestInterface
     Guid SomeGuid { get; set; }
 
     DateTime SomeDateTime { get; set; }
+
+    long? NullableLong { get; set; }
 }
