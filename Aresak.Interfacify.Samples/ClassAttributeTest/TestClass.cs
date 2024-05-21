@@ -1,4 +1,4 @@
-﻿namespace Aresak.Interfacify.Samples;
+﻿namespace Aresak.Interfacify.Samples.ClassAttributeTest;
 
 /// <summary>
 /// Sample class for the <see cref="InterfacifyAttribute"/>.
