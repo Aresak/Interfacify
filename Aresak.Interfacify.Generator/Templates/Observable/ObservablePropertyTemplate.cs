@@ -6,7 +6,7 @@ internal class ObservablePropertyTemplate(PropertyMetadata property) : PropertyT
 {
     string privateValueName => $"_generated_{Property.Name}";
 
-    string privateValueDeclaration => $"{Property.AccessibilityToString()} {Property.Type.ToDisplayString()} {privateValueName}";
+    string privateValueDeclaration => $"private {Property.Type.ToDisplayString()} {privateValueName}";
     string publicValueDeclaration => $"{Property.AccessibilityToString()} {Property.Type.ToDisplayString()} {Property.Name}";
 
     protected override string GenerateWithGetterOnly()
