@@ -1,4 +1,5 @@
 ﻿using Aresak.Interfacify.Samples.ClassAttributeTest;
+using Aresak.Interfacify.Samples.DifferentNamespace;
 using Aresak.Interfacify.Samples.InterfaceAttributeTest;
 
 namespace Aresak.Interfacify.Samples;

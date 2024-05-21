@@ -1,4 +1,6 @@
-﻿namespace Aresak.Interfacify.Samples.ClassAttributeTest;
+﻿using Aresak.Interfacify.Samples.DifferentNamespace;
+
+namespace Aresak.Interfacify.Samples.ClassAttributeTest;
 
 /// <summary>
 /// Sample interface for the <see cref="InterfacifyAttribute"/>.
@@ -27,13 +29,4 @@ internal interface ITestInterface
     Guid SomeGuid { get; set; }
 
     DateTime SomeDateTime { get; set; }
-}
-
-internal enum TestEnum
-{
-    One,
-
-    Two,
-
-    Three
 }
