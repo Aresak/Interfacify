@@ -95,6 +95,8 @@ internal class PropertyTemplate(PropertyMetadata property)
     /// <returns>Property declaration ie. "private int Id"</returns>
     protected virtual string GeneratePropertyDeclaration()
     {
-        return $"{Property.AccessibilityToString()} {Property.Type.Name} {Property.Name}";
+        string declaration = $"{Property.AccessibilityToString()} {Property.Type.ToDisplayString()} {Property.Name}";
+
+        return declaration;
     }
 }
