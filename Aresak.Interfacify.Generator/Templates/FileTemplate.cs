@@ -41,7 +41,7 @@ internal class FileTemplate(ClassMetadata metadata)
             {{
                 {data.Attributes}
                 [GeneratedCode(""Interfacify"", ""1.1.0"")]
-                {Metadata.AccessibilityToString()} partial class {data.ClassName}
+                {Metadata.AccessibilityToString()} partial class {data.ClassName} {data.ClassNameSuffix}
                 {{
                     {data.AdditionalCode}
                     {data.Properties}
@@ -113,6 +113,16 @@ internal class FileTemplate(ClassMetadata metadata)
         return Metadata.Name;
     }
 
+    protected virtual string GenerateClassNameSuffix()
+    {
+        if (Metadata.IsInterface)
+        {
+            return $": {Metadata.Name}";
+        }
+
+        return string.Empty;
+    }
+
     /// <summary>
     /// Generates the source code for all properties.
     /// </summary>
@@ -130,6 +140,26 @@ internal class FileTemplate(ClassMetadata metadata)
         return stringBuilder.ToString();
     }
 
+    TemplateData GetTemplateData()
+    {
+        string properties = GenerateProperties();
+        string usings = AddUsingStatements();
+        string attributes = AddClassAttributes();
+        string additionalCode = AddAdditionalClassCode();
+        string className = GenerateClassName();
+        string classNameSuffix = GenerateClassNameSuffix();
+
+        return new TemplateData
+        {
+            Properties = properties,
+            Usings = usings,
+            Attributes = attributes,
+            AdditionalCode = additionalCode,
+            ClassName = className,
+            ClassNameSuffix = classNameSuffix
+        };
+    }
+
     /// <summary>
     /// Arranges the source code using Roslyn.
     /// </summary>
@@ -144,24 +174,6 @@ internal class FileTemplate(ClassMetadata metadata)
         return ret;
     }
 
-    TemplateData GetTemplateData()
-    {
-        string properties = GenerateProperties();
-        string usings = AddUsingStatements();
-        string attributes = AddClassAttributes();
-        string additionalCode = AddAdditionalClassCode();
-        string className = GenerateClassName();
-
-        return new TemplateData
-        {
-            Properties = properties,
-            Usings = usings,
-            Attributes = attributes,
-            AdditionalCode = additionalCode,
-            ClassName = className
-        };
-    }
-
     struct TemplateData
     {
         public string Properties { get; set; }
@@ -173,5 +185,7 @@ internal class FileTemplate(ClassMetadata metadata)
         public string AdditionalCode { get; set; }
 
         public string ClassName { get; set; }
+
+        public string ClassNameSuffix { get; set; }
     }
 }
