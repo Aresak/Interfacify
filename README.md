@@ -1,5 +1,8 @@
 # Interfacify
-Automates the generation of interface-compliant properties based on attributes.
+
+Automates the generation of interface-compliant classes or missing properties in a class.
+
+[![NuGet](https://img.shields.io/nuget/v/Aresak.Interfacify.svg)](https://www.nuget.org/packages/Aresak.Interfacify/)
 
 ## Installation
 
@@ -28,11 +31,49 @@ public interface IMyInterface
 }
 ```
 
+### Auto-generated class from an interface
+
+If you wish to automatically generate a class that implements the interface, you can use the `InterfacifyAttribute`:
+
+```csharp
+[Interfacify]
+public interface IMyInterface
+{
+	string MyProperty { get; set; }
+
+	string MyOtherProperty { get; set; }
+}
+```
+
+The following code will be generated:
+
+```csharp
+public partial class MyInterface : IMyInterface
+{
+	public string MyProperty { get; set; }
+
+	public string MyOtherProperty { get; set; }
+}
+```
+
+It will create a new class with the same name as the interface, but without the `I` prefix.
+In case, your interface doesn't begin with an `I`, the class will have a suffix `Class`.
+
+Examples:
+
+- The interface `IMyInterface` will generate a class `MyInterface`.
+- The interface `MyInterface` will generate a class `MyInterfaceClass`.
+
+### Generating missing properties to a class that implements the interface
+
+If you wish to only auto-generate missing interface properties on a class, you can use the `InterfacifyAttribute`.
+That way if you want to define custom property definitions, you can do so.
+
 Create a class that implements the interface and add `[Interfacify]` attribute:
 
 ```csharp
 [Interfacify)]
-public class MyClass : IMyInterface
+public partial class MyClass : IMyInterface
 {
 	public string MyProperty { get; set; }
 }
@@ -42,13 +83,15 @@ The following code will be generated:
 
 ```csharp
 
-public class MyClass : IMyInterface
+public partial class MyClass : IMyInterface
 {
 	public string MyProperty { get; set; }
 
 	public string MyOtherProperty { get; set; }
 }
 ```
+
+
 
 ### Specifying a generator template
 
@@ -57,7 +100,7 @@ it can be specified by using the `Template` parameter of the `InterfacifyAttribu
 
 ```csharp
 [Interfacify(Template.NotifyPropertyChanged)]
-public class MyClass : IMyInterface
+public partial class MyClass : IMyInterface
 {
 // ...
 ```
@@ -79,7 +122,7 @@ With the specified rules:
 
 ```csharp
 [Interfacify(Template.Basic)]
-public class MyClass : IMyInterface
+public partial class MyClass : IMyInterface
 {
 	public string MyProperty { get; set; }
 
@@ -100,7 +143,7 @@ With the specified rules:
 
 ```csharp
 [Interfacify(Template.NotifyPropertyChanged)]
-public class MyClass : IMyInterface
+public partial class MyClass : IMyInterface
 {
 	// Generated required code
 	public event PropertyChangedEventHandler PropertyChanged;

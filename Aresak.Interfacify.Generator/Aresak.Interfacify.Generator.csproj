@@ -9,7 +9,7 @@
     <RootNamespace>Aresak.Interfacify</RootNamespace>
     <Title>Interfacify</Title>
     <Authors>Aresak</Authors>
-    <Description>Automates the generation of interface-compliant properties based on attributes</Description>
+    <Description>Generates classes or missing properties based on the interface</Description>
     <PackageProjectUrl>https://github.com/Aresak/Interfacify</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Aresak/Interfacify</RepositoryUrl>
