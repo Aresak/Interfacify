@@ -16,16 +16,13 @@ internal class FileTemplate(ClassMetadata metadata)
     /// </summary>
     protected ClassMetadata Metadata => metadata;
 
-    /// <summary>
+    /// <summary> 
     /// Generates the source code for the file.
     /// </summary>
     /// <returns>Full source code for the file</returns>
     public virtual string GenerateFile()
     {
-        string properties = GenerateProperties();
-        string usings = AddUsingStatements();
-        string attributes = AddClassAttributes();
-        string additionalCode = AddAdditionalClassCode();
+        TemplateData data = GetTemplateData();
 
         // TODO: Specify the version in the [GeneratedCode] attribute
         // by Assembly version.
@@ -38,16 +35,16 @@ internal class FileTemplate(ClassMetadata metadata)
             //----------------------
 
             using System.CodeDom.Compiler;
-            {usings}
+            {data.Usings}
 
             namespace {Metadata.Namespace}
             {{
-                {attributes}
-                [GeneratedCode(""Interfacify"", ""1.0.0"")]
-                {Metadata.AccessibilityToString()} partial class {Metadata.Name}
+                {data.Attributes}
+                [GeneratedCode(""Interfacify"", ""1.1.0"")]
+                {Metadata.AccessibilityToString()} partial class {data.ClassName}
                 {{
-                    {additionalCode}
-                    {properties}
+                    {data.AdditionalCode}
+                    {data.Properties}
                 }}
             }}
             ";
@@ -96,6 +93,27 @@ internal class FileTemplate(ClassMetadata metadata)
     }
 
     /// <summary>
+    /// Generates a class name based.
+    /// </summary>
+    /// <returns>The class name to be used</returns>
+    protected virtual string GenerateClassName()
+    {
+        if (Metadata.IsInterface)
+        {
+            if (Metadata.Name.Length > 1 && Metadata.Name[0] == 'I' && char.IsUpper(Metadata.Name[1]))
+            {
+                return Metadata.Name.Substring(1);
+            }
+            else
+            {
+                return Metadata.Name + "Class";
+            }
+        }
+
+        return Metadata.Name;
+    }
+
+    /// <summary>
     /// Generates the source code for all properties.
     /// </summary>
     /// <returns>Full source code of all properties</returns>
@@ -124,5 +142,36 @@ internal class FileTemplate(ClassMetadata metadata)
         string ret = root.ToFullString();
 
         return ret;
+    }
+
+    TemplateData GetTemplateData()
+    {
+        string properties = GenerateProperties();
+        string usings = AddUsingStatements();
+        string attributes = AddClassAttributes();
+        string additionalCode = AddAdditionalClassCode();
+        string className = GenerateClassName();
+
+        return new TemplateData
+        {
+            Properties = properties,
+            Usings = usings,
+            Attributes = attributes,
+            AdditionalCode = additionalCode,
+            ClassName = className
+        };
+    }
+
+    struct TemplateData
+    {
+        public string Properties { get; set; }
+
+        public string Usings { get; set; }
+
+        public string Attributes { get; set; }
+
+        public string AdditionalCode { get; set; }
+
+        public string ClassName { get; set; }
     }
 }

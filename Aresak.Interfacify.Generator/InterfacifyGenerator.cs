@@ -9,7 +9,6 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace Aresak.Interfacify;
 
@@ -30,8 +29,14 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// <param name="context"></param>
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<ClassDeclarationSyntax> provider = CreateProvider(context);
-        IncrementalValueProvider<(Compilation Left, ImmutableArray<ClassDeclarationSyntax> Right)> compilation = CreateCompilation(context, provider);
+        RegisterSourceOutput<ClassDeclarationSyntax>(context);
+        RegisterSourceOutput<InterfaceDeclarationSyntax>(context);
+    }
+
+    static void RegisterSourceOutput<T>(IncrementalGeneratorInitializationContext context) where T : SyntaxNode
+    {
+        IncrementalValuesProvider<T> provider = CreateProvider<T>(context);
+        IncrementalValueProvider<(Compilation Left, ImmutableArray<T> Right)> compilation = CreateCompilation(context, provider);
 
         context.RegisterSourceOutput(compilation, (sourceContext, source) => Execute(sourceContext, source.Left, source.Right));
     }
@@ -41,35 +46,13 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// </summary>
     /// <param name="context"></param>
     /// <returns></returns>
-    static IncrementalValuesProvider<ClassDeclarationSyntax> CreateProvider(IncrementalGeneratorInitializationContext context)
+    static IncrementalValuesProvider<T> CreateProvider<T>(IncrementalGeneratorInitializationContext context) where T : SyntaxNode
     {
-        IncrementalValuesProvider<ClassDeclarationSyntax> provider = context.SyntaxProvider
-            .ForAttributeWithMetadataName(ATTRIBUTE_PATH, ProviderPredicate, ProviderTransform)
+        IncrementalValuesProvider<T> provider = context.SyntaxProvider
+            .ForAttributeWithMetadataName(ATTRIBUTE_PATH, (node, _) => node is T, (context, _) => (T)context.TargetNode)
             .Where(node => node is not null);
 
         return provider;
-    }
-
-    /// <summary>
-    /// Casts ContextNode to ClassDeclarationSyntax.
-    /// </summary>
-    /// <param name="context"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    static ClassDeclarationSyntax ProviderTransform(GeneratorAttributeSyntaxContext context, CancellationToken token)
-    {
-        return (ClassDeclarationSyntax)context.TargetNode;
-    }
-
-    /// <summary>
-    /// Predicate for the <see cref="InterfacifyAttribute"/>.
-    /// </summary>
-    /// <param name="node"></param>
-    /// <param name="token"></param>
-    /// <returns></returns>
-    static bool ProviderPredicate(SyntaxNode node, CancellationToken token)
-    {
-        return node is ClassDeclarationSyntax;
     }
 
     /// <summary>
@@ -78,11 +61,11 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// <param name="context"></param>
     /// <param name="provider"></param>
     /// <returns></returns>
-    static IncrementalValueProvider<(Compilation Left, ImmutableArray<ClassDeclarationSyntax> Right)>
-        CreateCompilation(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<ClassDeclarationSyntax> provider)
+    static IncrementalValueProvider<(Compilation Left, ImmutableArray<T> Right)>
+        CreateCompilation<T>(IncrementalGeneratorInitializationContext context, IncrementalValuesProvider<T> provider)
     {
-        IncrementalValueProvider<ImmutableArray<ClassDeclarationSyntax>> nodes = provider.Collect();
-        IncrementalValueProvider<(Compilation Left, ImmutableArray<ClassDeclarationSyntax> Right)> compilation = context.CompilationProvider.Combine(nodes);
+        IncrementalValueProvider<ImmutableArray<T>> nodes = provider.Collect();
+        IncrementalValueProvider<(Compilation Left, ImmutableArray<T> Right)> compilation = context.CompilationProvider.Combine(nodes);
 
         return compilation;
     }
@@ -94,13 +77,21 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// <param name="compilation"></param>
     /// <param name="nodes">A list of classes with the attribute</param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Miscellaneous Design", "AV1210:Catch a specific exception instead of Exception, SystemException or ApplicationException", Justification = "<Pending>")]
-    static void Execute(SourceProductionContext context, Compilation compilation, ImmutableArray<ClassDeclarationSyntax> nodes)
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Maintainability", "AV1500:Member or local function contains too many statements", Justification = "<Pending>")]
+    static void Execute<T>(SourceProductionContext context, Compilation compilation, ImmutableArray<T> nodes) where T : SyntaxNode
     {
-        foreach (ClassDeclarationSyntax node in nodes)
+        foreach (SyntaxNode node in nodes)
         {
             try
             {
-                ProcessNode(context, compilation, node);
+                if (node is ClassDeclarationSyntax classNode)
+                {
+                    ProcessClassNode(context, compilation, classNode);
+                }
+                else if (node is InterfaceDeclarationSyntax interfaceNode)
+                {
+                    ProcessInterfaceNode(context, compilation, interfaceNode);
+                }
             }
             catch (Exception exception)
             {
@@ -126,7 +117,7 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// <param name="compilation"></param>
     /// <param name="node"></param>
     /// <returns></returns>
-    static INamedTypeSymbol? GetSymbol(Compilation compilation, ClassDeclarationSyntax node)
+    static INamedTypeSymbol? GetSymbol(Compilation compilation, SyntaxNode node)
     {
         INamedTypeSymbol? symbol = compilation
             .GetSemanticModel(node.SyntaxTree)
@@ -141,7 +132,31 @@ public class InterfacifyGenerator : IIncrementalGenerator
     /// <param name="context"></param>
     /// <param name="compilation"></param>
     /// <param name="node"></param>
-    static void ProcessNode(SourceProductionContext context, Compilation compilation, ClassDeclarationSyntax node)
+    static void ProcessClassNode(SourceProductionContext context, Compilation compilation, ClassDeclarationSyntax node)
+    {
+        INamedTypeSymbol? symbol = GetSymbol(compilation, node);
+
+        if (symbol is null)
+        {
+            return;
+        }
+
+        // Select the correct template.
+        FileTemplate template = GetTemplate(symbol);
+
+        // Generate the source.
+        string source = template.GenerateFile();
+
+        SaveSource(context, symbol, source);
+    }
+
+    /// <summary>
+    /// Processes a single class.
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="compilation"></param>
+    /// <param name="node"></param>
+    static void ProcessInterfaceNode(SourceProductionContext context, Compilation compilation, InterfaceDeclarationSyntax node)
     {
         INamedTypeSymbol? symbol = GetSymbol(compilation, node);
 

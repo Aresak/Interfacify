@@ -9,14 +9,14 @@
     <RootNamespace>Aresak.Interfacify</RootNamespace>
     <Title>Interfacify</Title>
     <Authors>Aresak</Authors>
-    <Description>Automates the generation of interface-compliant properties based on attributes</Description>
+    <Description>Generates classes or missing properties based on the interface</Description>
     <PackageProjectUrl>https://github.com/Aresak/Interfacify</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>https://github.com/Aresak/Interfacify</RepositoryUrl>
     <PackageTags>code;interface;generator;attribute;template</PackageTags>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <Version>1.0.1</Version>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -41,8 +41,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.3.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>

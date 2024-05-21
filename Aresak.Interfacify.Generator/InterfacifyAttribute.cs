@@ -6,7 +6,7 @@ namespace Aresak.Interfacify;
 /// Generate members for the class from all implemented interfaces.
 /// Optionally specify a template to use.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
 public class InterfacifyAttribute : Attribute
 {
     /// <summary>

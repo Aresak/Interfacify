@@ -1,0 +1,4 @@
+﻿using System.Diagnostics.CodeAnalysis;
+
+[assembly: SuppressMessage("Maintainability", "AV1500:Member or local function contains too many statements", Justification = "<Pending>", Scope = "member", Target = "~M:Aresak.Interfacify.InterfacifyGenerator.Execute(Microsoft.CodeAnalysis.SourceProductionContext,Microsoft.CodeAnalysis.Compilation,System.Collections.Immutable.ImmutableArray{System.Object})")]
+[assembly: SuppressMessage("Miscellaneous Design", "AV1210:Catch a specific exception instead of Exception, SystemException or ApplicationException", Justification = "<Pending>", Scope = "member", Target = "~M:Aresak.Interfacify.InterfacifyGenerator.Execute(Microsoft.CodeAnalysis.SourceProductionContext,Microsoft.CodeAnalysis.Compilation,System.Collections.Immutable.ImmutableArray{System.Object})")]
